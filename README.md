@@ -1,4 +1,4 @@
-# Lem-in Sorting Algorithm
+# Ant Sorting Algorithm
 
 Made by Ali Khalaf, Salman Nader, Ahmed Aburowais, and Moataz Ibrahim. This complex program is meant to allow the sortings of ants within a certain grid. By utilizing Depth-First Search and many other functions, it is able to give a set order of the paths that ants go through without overlapping over each other.
 
