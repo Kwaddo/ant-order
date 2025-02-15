@@ -5,12 +5,14 @@ Made by Ali Khalaf, Salman Nader, Ahmed Aburowais, and Moataz Ibrahim. This comp
 ## How-To-Use
 
 The entire program runs with Go, so with a given IDE you'd want to run the code by typing the following in the terminal:
-```
+
+```go
 go run main.go [INPUTFILENAME.TXT]
 ```
 
 There is already a text file called "input.txt" within the folder, but you can use any text file within it. Once you create the text file, the inputs must be according to a strict format. The format is as follows:
-```
+
+```txt
 number_of_ants
 the_rooms
 the_links
@@ -23,7 +25,8 @@ Lx-y
 ```
 
 To be put into practice:
-```
+
+```txt
 4
 ##start
 0 0 3
@@ -39,6 +42,7 @@ To be put into practice:
 ## Code Explained
 
 The idea of the parse is a checker, to see if there are any conflicting connections, any wrong values, any repetitions, and any formats that completely go against what should follow through. Here in parsing we will get the ants number and all the room and also the each room and what rooms its connected to, the connections will be saved in graph struct as well as the start room and the end room. as for the rooms they will be saved in the Room struct saving the name and the x and y values of that room. Of course we should check if the file extension is a text file or not, then we take the data from the filename given in the parameter. Then we try to validate the following:
+
 1) Number of ants can't be zero of above the limit [150,000]
 2) We catch the [##start] and [##end] flags to know the start and end Rooms
 3) We catch the Room connection by seeing if the string has a [ - ] sign in it. and saving the results in graph.nodes
@@ -52,11 +56,11 @@ First thing this is set out to make is an array of paths, so that every validate
 
 By using DFS, the given function below, it focuses mainly on returning every possible path with no discrimination. Within it is a function that returns the distance between the two rooms, which is in accordance to pythogoreas's theorem. Once all paths are found, they are to be validated.
 
-The ValidatePaths function is a slightly complex algorithm that only keeps paths that do not overlap each other, keeping each of them unique. "uPaths" is the Paths struct array that has only the ones that are chosen. "roomUsedCount" is a map that is meant to keep the rooms that are used in their specific places, for rememberance that it does not overlap in the future. It checks how many times they are used and keeps a count. A for-loop is made for the paths, to check each path accordingly one-by-one. 
+The ValidatePaths function is a slightly complex algorithm that only keeps paths that do not overlap each other, keeping each of them unique. "uPaths" is the Paths struct array that has only the ones that are chosen. "roomUsedCount" is a map that is meant to keep the rooms that are used in their specific places, for rememberance that it does not overlap in the future. It checks how many times they are used and keeps a count. A for-loop is made for the paths, to check each path accordingly one-by-one.
 
 Within the for-loop is the overlap score, which has the total from "roomUsedCount" so that it can be used soon. The "overlapRatio" focuses on dividing the overlap score by the total amount of internal rooms, obviously disregarding the start and end rooms since they do not count. After constant trial and error, we found the best ratio for getting only the unique paths to be smaller than or equal to 0.3. This is because within that given path, there are a small amount of overlaps and by making the number bigger we are only allowing for more overlaps, so 0.3 is meant to be that sweet spot. Within the if statement, it adds the path to "uPaths" and then keeps another for loop to increase the "roomUsedCount". Once all of it is done, it returns the validated paths only. This is not where it ends, as the function returns another called CullPaths that gets rid of any conflicting rooms.
 
-After creating a new Paths array, a for-range is made for the inputted paths and within it is a boolean called "shouldAdd" which should indicate if the chosen path should be added or not. The for-range goes through all paths that are found within. Another for-range is made for the culled paths' variable, which starts empty so it instantly goes to the if statement under it and appends the first path regardless. Now, the for-range is useable, so it first creates a new variable called "minLength" that first is made to be the length of the rooms for the paths. Then, an if statement that checks if the length of the rooms of the chosen culled paths is smaller than the length of the chosen path. When the if statement follows through, minLength is changed to be the length of the chosen culled paths in the current for-range. Another for-loop is made, one to compare the rooms of the culled paths and the normal paths. This is to find any conflicting paths, disregarding the first and last room which is why this loop starts at 1 and ends at minLength minus one. Once one is found within the if statement, it will then change the shouldAdd boolean to false and the function will skip adding the path to the culled paths. After all of that is done, it maintains the paths that have not been culled. 
+After creating a new Paths array, a for-range is made for the inputted paths and within it is a boolean called "shouldAdd" which should indicate if the chosen path should be added or not. The for-range goes through all paths that are found within. Another for-range is made for the culled paths' variable, which starts empty so it instantly goes to the if statement under it and appends the first path regardless. Now, the for-range is useable, so it first creates a new variable called "minLength" that first is made to be the length of the rooms for the paths. Then, an if statement that checks if the length of the rooms of the chosen culled paths is smaller than the length of the chosen path. When the if statement follows through, minLength is changed to be the length of the chosen culled paths in the current for-range. Another for-loop is made, one to compare the rooms of the culled paths and the normal paths. This is to find any conflicting paths, disregarding the first and last room which is why this loop starts at 1 and ends at minLength minus one. Once one is found within the if statement, it will then change the shouldAdd boolean to false and the function will skip adding the path to the culled paths. After all of that is done, it maintains the paths that have not been culled.
 
 Within the for-loop is the overlap score, which has the total from "roomUsedCount" so that it can be used soon. The "overlapRatio" focuses on dividing the overlap score by the total amount of internal rooms, obviously disregarding the start and end rooms since they do not count. After constant trial and error, we found the best ratio for getting only the unique paths to be smaller than or equal to 0.3. This is because within that given path, there are a small amount of overlaps and by making the number bigger we are only allowing for more overlaps, so 0.3 is meant to be that sweet spot. Within the if statement, it adds the path to "uPaths" and then keeps another for loop to increase the "roomUsedCount". Once all of it is done, it returns the validated paths only.
 
@@ -69,6 +73,7 @@ After that, we reach the movement section of the function. A for loop is created
 A new variable named pathID is named such because it is the path in accordance to the current chosen ant, from their ID. Then comes an if statement which checks if the positions, which would be an int and would intentionally increment every single time the given ant follows through a move, for the ID of the ant is smaller than the amount of rooms that the chosen path is. If this returns false, then the ant is considered finished and would move on to the next ant.
 
 Within the previous if statement, a new variable is created named "nextRoom" which is focuses on returning the next room only, since the statements end before the final room. "enteredFirstRoom" is defaulted as false, and the if statement next checks if this current ant has entered the first room. If it did not, the if statement then follows through to another one which checks if the next room is occupied or not. If it isn't occupied, the following happens:
+
 1) The position of the ants increment, assuming it's next trajectory is the next room.
 2) A new variable called "currentRoom" is created, and it returns the current ant's room rather than the next one done previously.
 3) Since we want to show the ant going through the current movement, it appends the style (L[ID]-[ROOM]) to the "movement" array.
