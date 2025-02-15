@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	li "lemin/lem-in"
+	li "lemin/funcs"
 	"os"
 )
 
